@@ -25,7 +25,7 @@ server = smtp.createServer(process.env, function(req) {
     // send message to SWU endpoint
     req.on("message", function(stream, ack) {
         stream.pipe(new MailParser().on("end", function(email) {
-            console.log(email);
+            var recipient = email.to[0].address
         
             http.post({
                 url: endpoint + "/send",
@@ -52,9 +52,9 @@ server = smtp.createServer(process.env, function(req) {
 
                 status = String(res.statusCode);
                 if (res.statusCode >= 500) {
-                    console.error(status + " failed to transmit message");
+                    console.error(status, "failed to transmit message");
                 } else if (res.statusCode >= 200 && res.statusCode < 300) {
-                    console.log(status + " message transmitted");
+                    console.log(status, "message transmitted for", recipient);
                 } else {
                     console.error(status + " unexpected");
                 }
