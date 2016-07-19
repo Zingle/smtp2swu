@@ -1,7 +1,11 @@
 {
   "name": "smtp2swu",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "SMTP gateway to sendwithus API",
+  "main": "index.js",
+  "bin": {
+    "smtp2swu": "bin/smtp2swu.js"
+  },
   "scripts": {
     "test": "mocha"
   },
