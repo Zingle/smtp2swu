@@ -14,6 +14,7 @@ var smtp = require("smtp-protocol"),
  * @param {string} [opts.key]
  * @param {string} [opts.cert]
  * @param {string} [opts.ca]
+ * @param {boolean} [opts.debug]
  */
 function createServer(opts) {
     return smtp.createServer(opts, function(req) {
@@ -26,7 +27,12 @@ function createServer(opts) {
         // send message to SWU endpoint
         req.on("message", function(stream, ack) {
             stream.pipe(new MailParser().on("end", function(email) {
-                var recipient = email.to[0].address
+                var tocc = (email.to || []).concat(email.cc || []),
+                    to;
+
+                if (opts.debug) {
+                    console.log("email received\n" + JSON.stringify(email));
+                }
 
                 http.post({
                     url: endpoint + "/send",
@@ -38,9 +44,9 @@ function createServer(opts) {
                     json: {
                         template: process.env.swutemplate,
                         sender: email.from[0],
-                        recipient: email.to[0],
-                        cc: [],
-                        bcc: [],
+                        recipient: tocc[0],
+                        cc: tocc.slice(1),
+                        bcc: email.bcc || [],
                         template_data: {
                             subject: email.subject,
                             body: email.text
@@ -55,7 +61,9 @@ function createServer(opts) {
                     if (res.statusCode >= 500) {
                         console.error(status, "failed to transmit message");
                     } else if (res.statusCode >= 200 && res.statusCode < 300) {
-                        console.log(status, "message transmitted to", recipient);
+                        to = tocc.concat(email.bcc || []).map(v => v.address);
+                        to = to.join(",");
+                        console.log(status, "message transmitted to", to);
                     } else {
                         console.error(status + " unexpected");
                     }
