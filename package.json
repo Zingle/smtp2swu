@@ -1,0 +1,17 @@
+{
+  "name": "smtp2swu",
+  "version": "0.0.1",
+  "description": "SMTP gateway to sendwithus API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Richard Remer (reanjr@gmail.com)",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "mailparser": "^0.6.1",
+    "request": "^2.73.0",
+    "smtp-protocol": "^2.4.7"
+  }
+}
