@@ -8,3 +8,7 @@ Setup
  * copy the `env.example` file to `.env` in the package root
  * open `.env` file and following comments in the config
  * execute `npm start` from the package root
+
+Warning
+-------
+The `smtp2wsu` server currently acts as an open relay.
